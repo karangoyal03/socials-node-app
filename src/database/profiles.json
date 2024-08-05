@@ -1,0 +1,27 @@
+[
+    {
+      "userId": "64c55bfc5f1b2c001c8b7a50",
+      "username": "john_doe",
+      "email": "john@example.com",
+      "phone": "123-456-7890",
+      "bio": "Software developer and tech enthusiast.",
+      "following": ["64c55bfc5f1b2c001c8b7a51"],
+      "followers": ["64c55bfc5f1b2c001c8b7a52"],
+      "bookmarks": ["post123", "post456"],
+      "comments": ["Great post!", "Very informative."],
+      "reviews": ["Awesome product!", "Highly recommend."]
+    },
+    {
+      "userId": "64c55bfc5f1b2c001c8b7a51",
+      "username": "jane_doe",
+      "email": "jane@example.com",
+      "phone": "987-654-3210",
+      "bio": "Digital marketer and content creator.",
+      "following": ["64c55bfc5f1b2c001c8b7a50"],
+      "followers": ["64c55bfc5f1b2c001c8b7a50"],
+      "bookmarks": ["post789", "post101"],
+      "comments": ["Loved this!", "Great read."],
+      "reviews": ["Good value.", "Well-made."]
+    }
+  ]
+  
