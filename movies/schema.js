@@ -25,7 +25,7 @@ const showSchema = new mongoose.Schema(
     Type: String,
     totalSeasons: String,
   },
-  { collection: "movies" }
+  { collection: "shows" }
 );
 
 export default showSchema;

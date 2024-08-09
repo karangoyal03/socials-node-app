@@ -2,6 +2,7 @@ import * as dao from "./dao.js";
 export default function ShowRoutes(app) {
   const findAllShows = async (req, res) => {
     const shows = await dao.findAllShows();
+    console.log(shows +"hi")
     return res.json(shows);
   };
   const createShow = async (req, res) => {
