@@ -5,11 +5,11 @@ const reviewSchema = new mongoose.Schema(
     title: { type: String, required: true },
     userId: { type: String, required: true },
     username : String,
-    rating: String,
+    rating: Number,
     comment: String,
-    createdAt: Date,
+    date: Date,
   },
-  { collection: "shows" }
+  { collection: "reviews" }
 );
 
 export default reviewSchema;

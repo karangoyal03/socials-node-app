@@ -7,14 +7,18 @@ export const createReview = (review) => {
 
 export const findAllReviews = () => model.find();
 
-export const findReviewByUserId = (userId) => model.findOne({ userId: userId });
+export const findReviewByUserId = (userId) => model.find({ userId: userId });
 
-export const findReviewByTitle = (title) => model.find({ title: title });
+export const findReviewByTitle = async(title) => {
+    console.log(title ,'hello')
+    await model.find({ title: title });}
 
 export const findReviewByUsername = (username) =>
   model.findOne({ username: username });
 
-export const updateReview = (userId, review) =>
-  model.updateOne({ userId: userId }, { $set: review });
+export const updateReview = async (_id, review) => {
+  console.log(_id, review);
+  await model.findByIdAndUpdate(_id, review);
+};
 
-export const deleteReview = (userId) => model.deleteOne({ userId: userId });
+export const deleteReview = (_id) => model.deleteOne({ _id: _id });

@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     },
     loginId : String
   },
-  { collation: "users" }
+  { collection: "users" }
 );
 
 export default userSchema;

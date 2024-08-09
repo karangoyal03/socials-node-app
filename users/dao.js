@@ -9,8 +9,9 @@ export const findAllUsers = () => model.find();
 
 export const findUserById = (userId) => model.findOne({ loginId: userId });
 
-export const findUserByUsername = (username) =>
-  model.findOne({ username: username });
+export const findUserByUsername = async (username) =>{
+  console.log(username);
+  console.log(await model.findOne({ username: username }))};
 
 export const findUserByCredentials = async (username, password) =>
   await model.findOne({ username, password });
