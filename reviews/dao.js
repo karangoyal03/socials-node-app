@@ -9,6 +9,8 @@ export const findAllReviews = () => model.find();
 
 export const findReviewByUserId = (userId) => model.findOne({ userId: userId });
 
+export const findReviewByTitle = (title) => model.find({ title: title });
+
 export const findReviewByUsername = (username) =>
   model.findOne({ username: username });
 
