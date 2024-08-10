@@ -1,7 +1,8 @@
 // import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
-
+// const dotenv = require('dotenv');
+// const jwt = require('jsonwebtoken');
 import cors from "cors";
 import session from "express-session";
 import ShowRoutes from "./movies/routes.js";

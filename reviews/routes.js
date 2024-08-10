@@ -29,15 +29,21 @@ export default function ReviewRoutes(app) {
   };
 
   const findReviewByTitle = async (req, res) => {
-    console.log("hello word")
+    console.log("show me the title",req.params.title);
     const review = await dao.findReviewByTitle(decodeURIComponent(req.params.title));
     res.json(review);
   };
+
+  const findReviewByMovieId = async(req,res)=>{
+    const review = await dao.findReviewByMovieId(req.params.movieId);
+    res.json(review);
+  }
 
   app.post("/api/reviews", createReview);
   app.get("/api/reviews", findAllReviews);
   app.get("/api/reviews/:userId", findReviewById);
   app.put("/api/reviews/:_id", updateReview);
   app.delete("/api/reviews/:_id", deleteReview);
-  app.get("/api/reviews/:title", findReviewByTitle);
+  app.get("/api/reviews/title/:title", findReviewByTitle);
+  app.get("/api/reviews/movie/:movieId",findReviewByMovieId)
 }
