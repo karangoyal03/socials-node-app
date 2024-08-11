@@ -1,4 +1,5 @@
 import * as dao from "./dao.js";
+import jwt from 'jsonwebtoken';
 let currentUser = null;
 
 export default function UserRoutes(app) {
@@ -39,21 +40,40 @@ export default function UserRoutes(app) {
     req.session["currentUser"] = currentUser;
     res.json(currentUser);
   };
-
   const signin = async (req, res) => {
     const { username, password } = req.body;
     const currentUser = await dao.findUserByCredentials(username, password);
     if (!currentUser) {
-      return res.status(400).send("User doesn't exists");
+        return res.status(400).send("User doesn't exist");
     }
 
-    if (currentUser) {
-      req.session["currentUser"] = currentUser;
-      res.json(currentUser);
-    } else {
-      res.status(401).json({ message: "Unable to login. Try again later." });
-    }
-  };
+    const userDoc = {
+        _id: currentUser._id,
+        username: currentUser.username,
+        email: currentUser.email,
+        role: currentUser.role,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        dob: currentUser.dob,
+        loginId: currentUser.loginId,
+        following: currentUser.following,
+        followers: currentUser.followers
+    };
+
+    jwt.sign(userDoc, process.env.SECRET_KEY, {}, (err, token) => {
+        if (err) {
+            return res.status(500).send({ message: "Internal Server error", error: err.message });
+        }
+        const cookieOptions = {
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 10 * 60 * 60 * 1000, // 10 hours in milliseconds
+            sameSite: 'Lax' // Adjust based on your needs
+        };
+        return res.cookie("token", token, cookieOptions).send(userDoc);
+    });
+};
+
 
   const signout = (req, res) => {
     return res.clearCookie("token").send("Logged out successfully");
@@ -67,13 +87,31 @@ export default function UserRoutes(app) {
   };
 
   const profile = async (req, res) => {
-    const currentUser = req.session["currentUser"];
-    if (!currentUser) {
-      res.sendStatus(401);
-      return;
-    }
+    // const currentUser = req.session["currentUser"];
+    // if (!currentUser) {
+    //   res.sendStatus(401);
+    //   return;
+    // }
 
-    res.json(currentUser);
+    // res.json(currentUser);
+
+    const { token } = req.cookies;
+
+    if(token){
+      jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
+          if (err) {
+              return null;
+          }
+          const user = await dao.findUserById(decoded.loginId);
+          // const { username, email, role, _id,firstName,lastName,dob,loginId,following,followers } = await dao.findUserById(decoded.loginId);
+          
+          // console.log(decoded);
+          
+          return res.status(200).send(user);
+      });
+  } else{
+      return res.send(null);
+  }
   };
 
   const followUser = async (req, res) => {

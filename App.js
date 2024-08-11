@@ -1,15 +1,17 @@
-// import "dotenv/config";
+import "dotenv/config";
+import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 // const dotenv = require('dotenv');
-// const jwt = require('jsonwebtoken');
 import cors from "cors";
 import session from "express-session";
 import ShowRoutes from "./movies/routes.js";
 import UserRoutes from "./users/routes.js";
 import ReviewRoutes from "./reviews/routes.js";
+import cookieParser from 'cookie-parser';
 const app = express();
-
+dotenv.config();
+app.use(cookieParser());
 const CONNECTION_STRING =
   process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/socials";
 
@@ -38,6 +40,7 @@ app.use(session(sessionOptions));
 app.use(
   cors({
     origin: process.env.NETLIFY_URL || "http://localhost:3000",
+    credentials: true
   })
 );
 app.use(express.json());
