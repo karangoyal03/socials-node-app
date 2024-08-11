@@ -12,7 +12,19 @@ const userSchema = new mongoose.Schema(
       enum: ["USER", "BLOGGER", "ADMIN"],
       default: "USER",
     },
-    loginId : String
+    loginId: String,
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModel",
+      },
+    ],
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModel",
+      },
+    ],
   },
   { collection: "users" }
 );

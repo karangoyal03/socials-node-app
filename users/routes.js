@@ -21,18 +21,6 @@ export default function UserRoutes(app) {
   const findUserById = async (req, res) => {
     const user = await dao.findUserById(req.params.userId);
     res.json(user);
-    // const { token } = req.cookies;
-    //     if(token){
-    //         jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
-    //             if (err) {
-    //                 return null;
-    //             }
-    //             const { firstName, email, role, _id,username,lastName,dob,loginId } = await dao.findUserById(decoded.userId);
-    //             return res.status(200).send({ firstName, email, role, _id,username,lastName,dob,loginId });
-    //         });
-    //     } else{
-    //         return res.send(null);
-    //     }
   };
   const updateUser = async (req, res) => {
     const { userId } = req.params;
@@ -58,17 +46,6 @@ export default function UserRoutes(app) {
     if (!currentUser) {
       return res.status(400).send("User doesn't exists");
     }
-    // const userDoc = {
-    //   _id: currentUser._id,
-    //   username: currentUser.username,
-    //   password: currentUser.password,
-    //   firstName : currentUser.firstName,
-    //   lastName : currentUser.lastName,
-    //   dob : currentUser.dob,
-    //   email: currentUser.email,
-    //   role: currentUser.role,
-    //   loginId : currentUser.loginId
-    // };
 
     if (currentUser) {
       req.session["currentUser"] = currentUser;
@@ -76,18 +53,6 @@ export default function UserRoutes(app) {
     } else {
       res.status(401).json({ message: "Unable to login. Try again later." });
     }
-  //   jwt.sign(userDoc, process.env.SECRET_KEY, {}, (err, token) => {
-  //     if (err) {
-  //         return res.status(500).send({ message: "Internal Server error", error: err.message });
-  //     }
-  //     const cookieOptions = {
-  //         httpOnly: true, 
-  //         secure: true, 
-  //         sameSite: "Strict", 
-          
-  //     };
-  //     return res.cookie("token", token , cookieOptions).send(userDoc);
-  // })
   };
 
   const signout = (req, res) => {
