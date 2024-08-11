@@ -76,6 +76,22 @@ export default function UserRoutes(app) {
     res.json(currentUser);
   };
 
+  const followUser = async (req, res) => {
+    const {userId} = req.params;
+    const {_id} = req.body;
+    console.log(userId , _id);
+    
+    const status = await dao.updateFollower(userId, _id);
+    res.json(status);
+  };
+
+  const unfollowUser = async (req, res) => {
+    const {userId} = req.params;
+    const {_id} = req.body;
+    const status = await dao.updateUnFollowing(userId, _id);
+    res.json(status);
+  };
+
   app.post("/api/users", createUser);
   app.get("/api/users", findAllUsers);
   app.get("/api/users/:userId", findUserById);
@@ -85,4 +101,6 @@ export default function UserRoutes(app) {
   app.post("/api/users/login", signin);
   app.post("/api/users/signout", signout);
   app.post("/api/users/profile", profile);
+  app.put("/api/users/follow/:userId", followUser);
+  app.put("/api/users/unfollow/:userId", unfollowUser);
 }

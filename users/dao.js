@@ -21,4 +21,16 @@ export const updateUser = (userId, user) =>
 
 export const deleteUser = (userId) => model.deleteOne({ loginId: userId });
 
+export const updateFollower = async (userId,_id) =>{
+  await model.updateOne({_id : userId}, { $push: { following: _id } })
+  await model.updateOne({_id : _id}, { $push: { followers: userId } })
+}
+
+export const updateUnFollowing = async (userId,_id) =>{
+  await model.updateOne({_id : userId}, { $pull: { following: _id } })
+  await model.updateOne({_id : _id}, { $pull: { followers: userId } })
+}
+
+
+
 export const findUsersByRole = (role) => model.find({ role: role });
