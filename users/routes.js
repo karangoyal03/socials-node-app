@@ -68,7 +68,7 @@ export default function UserRoutes(app) {
             httpOnly: true, 
             secure: process.env.NODE_ENV === 'production',
             maxAge: 10 * 60 * 60 * 1000, // 10 hours in milliseconds
-            sameSite: 'Lax' // Adjust based on your needs
+            sameSite: 'None' // Adjust based on your needs
         };
         return res.cookie("token", token, cookieOptions).send(userDoc);
     });
