@@ -1,5 +1,5 @@
 import * as dao from "./dao.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 let currentUser = null;
 
 export default function UserRoutes(app) {
@@ -40,40 +40,42 @@ export default function UserRoutes(app) {
     req.session["currentUser"] = currentUser;
     res.json(currentUser);
   };
+
   const signin = async (req, res) => {
     const { username, password } = req.body;
     const currentUser = await dao.findUserByCredentials(username, password);
     if (!currentUser) {
-        return res.status(400).send("User doesn't exist");
+      return res.status(400).send("User doesn't exist");
     }
 
     const userDoc = {
-        _id: currentUser._id,
-        username: currentUser.username,
-        email: currentUser.email,
-        role: currentUser.role,
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        dob: currentUser.dob,
-        loginId: currentUser.loginId,
-        following: currentUser.following,
-        followers: currentUser.followers
+      _id: currentUser._id,
+      username: currentUser.username,
+      email: currentUser.email,
+      role: currentUser.role,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      dob: currentUser.dob,
+      loginId: currentUser.loginId,
+      following: currentUser.following,
+      followers: currentUser.followers,
     };
 
     jwt.sign(userDoc, process.env.SECRET_KEY, {}, (err, token) => {
-        if (err) {
-            return res.status(500).send({ message: "Internal Server error", error: err.message });
-        }
-        const cookieOptions = {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 10 * 60 * 60 * 1000, // 10 hours in milliseconds
-            sameSite: 'None' // Adjust based on your needs
-        };
-        return res.cookie("token", token, cookieOptions).send(userDoc);
+      if (err) {
+        return res
+          .status(500)
+          .send({ message: "Internal Server error", error: err.message });
+      }
+      const cookieOptions = {
+        httpOnly: true,
+        secure: true,
+        maxAge: 10 * 60 * 60 * 1000,
+        sameSite: "None",
+      };
+      return res.cookie("token", token, cookieOptions).send(userDoc);
     });
-};
-
+  };
 
   const signout = (req, res) => {
     return res.clearCookie("token").send("Logged out successfully");
@@ -87,47 +89,43 @@ export default function UserRoutes(app) {
   };
 
   const profile = async (req, res) => {
-    // const currentUser = req.session["currentUser"];
-    // if (!currentUser) {
-    //   res.sendStatus(401);
-    //   return;
-    // }
-
-    // res.json(currentUser);
-
     const { token } = req.cookies;
-
-    if(token){
+    if (token) {
       jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
-          if (err) {
-              return null;
-          }
-          const user = await dao.findUserById(decoded.loginId);
-          // const { username, email, role, _id,firstName,lastName,dob,loginId,following,followers } = await dao.findUserById(decoded.loginId);
-          
-          // console.log(decoded);
-          
-          return res.status(200).send(user);
+        if (err) {
+          return null;
+        }
+        const user = await dao.findUserById(decoded.loginId);
+
+        return res.status(200).send(user);
       });
-  } else{
+    } else {
       return res.send(null);
-  }
+    }
   };
 
   const followUser = async (req, res) => {
-    const {userId} = req.params;
-    const {_id} = req.body;
-    console.log(userId , _id);
-    
+    const { userId } = req.params;
+    const { _id } = req.body;
+    console.log(userId, _id);
+
     const status = await dao.updateFollower(userId, _id);
     res.json(status);
   };
 
   const unfollowUser = async (req, res) => {
-    const {userId} = req.params;
-    const {_id} = req.body;
+    const { userId } = req.params;
+    const { _id } = req.body;
     const status = await dao.updateUnFollowing(userId, _id);
     res.json(status);
+  };
+
+  const findUserByObjectId = async (req, res) => {
+    const { _id } = req.params;
+    console.log(_id + "id");
+    const user = await dao.findUserByIdOnly(_id);
+    console.log(user);
+    res.json(user);
   };
 
   app.post("/api/users", createUser);
@@ -141,4 +139,5 @@ export default function UserRoutes(app) {
   app.post("/api/users/profile", profile);
   app.put("/api/users/follow/:userId", followUser);
   app.put("/api/users/unfollow/:userId", unfollowUser);
+  app.get("/api/user/:_id", findUserByObjectId);
 }
